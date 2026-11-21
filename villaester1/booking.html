@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ceb">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#fff6df">
+    <meta name="description" content="Book your Villa Ester outing.">
+    <title>Book na | Villa Ester</title>
+    <link rel="icon" type="image/png" href="img/favicon-v2.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="site-header" id="top">
+        <nav class="nav-shell" aria-label="Main menu">
+            <a class="brand" href="index.html" aria-label="Villa Ester home">
+                <span class="brand-icon" aria-hidden="true">VE</span>
+                <span>VILLA ESTER<small>RESORT & FAMILY FUN</small></span>
+            </a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="booking section-pad" id="reservation-form" aria-labelledby="reservation-title">
+            <div class="booking-copy">
+                <p class="eyebrow">Ready na ba ang family GC?</p>
+                <h2 id="reservation-title">I-send na<br>ang <em>“G?”</em></h2>
+                <p>Pili og date, ihap pila gyud mo (ayaw iapil tong “sunod na lang ko”), unya isulat diri inyong details.</p>
+                <div class="booking-callout"><span>📣</span><span><b>Pro tip para sa outing:</b> Dala og extra nga sinina, sudlanan sa sobra, ug extra patience.</span></div>
+            </div>
+            <form class="booking-form">
+                <label for="guest-name">Imong name</label>
+                <input id="guest-name" name="name" type="text" placeholder="Ikaw ba ang in-charge sa GC?" required>
+                <div class="form-row">
+                    <div><label for="visit-date">Target date</label><input id="visit-date" name="date" type="date" required></div>
+                    <div><label for="guest-count">Pila mo kabuok? Be honest.</label><select id="guest-count" name="guests"><option>1–5 (gamay ra kuno)</option><option>6–10 (naay kids)</option><option>11–20 (whole family)</option><option>21+ (apil silingan)</option></select></div>
+                </div>
+                <label for="guest-email">Email para ma-replyan ka</label>
+                <input id="guest-email" name="email" type="email" placeholder="ikaw@example.com" required>
+                <button class="button button-orange" type="submit">Check ang date <span aria-hidden="true">↗</span></button>
+                <p class="form-status" role="status" aria-live="polite"></p>
+                <p class="form-disclaimer">Ma-check ang imong gipiling date, pero ang availability kinahanglan kumpirmahon sa resort. Kini nga form wala pa konektado sa live booking system.</p>
+            </form>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-main">
+            <a class="brand footer-brand" href="index.html"><span class="brand-icon" aria-hidden="true">VE</span><span>VILLA ESTER<small>RESORT & FAMILY FUN</small></span></a>
+            <p>Para sa laag nga<br>“kadiyot ra” kuno, pero 30 diay mo.</p>
+            <div class="footer-links"><a href="index.html#amenities">Unsa'y naa?</a><a href="index.html#packages">Packages</a><a href="index.html#kwento">Ang story</a><a href="index.html">Home</a></div>
+            <span class="footer-signoff">See you!<br><b>— Villa Ester</b></span>
+        </div>
+        <div class="footer-bottom"><span>© <span id="year"></span> VILLA ESTER · CONCEPT WEBSITE</span><a href="#top">BALIK SA TAAS ↑</a></div>
+    </footer>
+
+    <script>
+        document.querySelector("#year").textContent = new Date().getFullYear();
+
+        const bookingForm = document.querySelector(".booking-form");
+        const visitDate = document.querySelector("#visit-date");
+        const formStatus = bookingForm.querySelector(".form-status");
+
+        function getLocalDateString(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, "0");
+            const day = String(date.getDate()).padStart(2, "0");
+            return `${year}-${month}-${day}`;
+        }
+
+        visitDate.min = getLocalDateString(new Date());
+
+        bookingForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+            if (!bookingForm.reportValidity()) return;
+
+            if (visitDate.value < getLocalDateString(new Date())) {
+                visitDate.setCustomValidity("Please choose today or a future date.");
+                visitDate.reportValidity();
+                return;
+            }
+
+            visitDate.setCustomValidity("");
+            const chosenDate = new Date(`${visitDate.value}T00:00:00`);
+            const formattedDate = chosenDate.toLocaleDateString("en-PH", {
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+            });
+            const guestCount = ["1–5", "6–10", "11–20", "21 or more"][
+                bookingForm.querySelector("#guest-count").selectedIndex
+            ];
+            formStatus.textContent = `Your selected date, ${formattedDate}, has been checked for ${guestCount} guests. Please contact the resort to confirm availability; this date has not been reserved.`;
+        });
+
+        visitDate.addEventListener("input", () => visitDate.setCustomValidity(""));
+    </script>
+</body>
+</html>
